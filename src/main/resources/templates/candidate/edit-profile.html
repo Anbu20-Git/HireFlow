@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fc;
+            color: #263b54;
+        }
+
+        /* TOP BAR */
+
+        .topbar {
+            background: white;
+            padding: 19px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e8eef5;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #183b64;
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: #f47761;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #2474bd;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 15px;
+            border: 1px solid #dceaf7;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            background: #eaf4ff;
+        }
+
+        /* MAIN */
+
+        .main {
+            max-width: 1000px;
+            margin: 38px auto;
+            padding: 0 22px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .eyebrow {
+            color: #2479b9;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .page-heading h1 {
+            color: #183b64;
+            font-size: 29px;
+            font-weight: 800;
+        }
+
+        .page-heading p {
+            color: #8492a6;
+            font-size: 13px;
+            margin-top: 9px;
+            line-height: 1.7;
+        }
+
+        /* FORM CARD */
+
+        .form-card {
+            background: white;
+            border: 1px solid #e6edf5;
+            border-radius: 17px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(31, 75, 117, 0.04);
+        }
+
+        .form-banner {
+            background: linear-gradient(110deg, #1c568b, #378ac5);
+            padding: 25px 32px;
+            color: white;
+        }
+
+        .form-banner h2 {
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .form-banner p {
+            color: #e1f1ff;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .form-body {
+            padding: 32px;
+        }
+
+        /* SECTIONS */
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaf0f6;
+            margin-bottom: 23px;
+        }
+
+        .section-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #eaf4ff;
+            color: #2474bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .section-heading h3 {
+            color: #183b64;
+            font-size: 15px;
+        }
+
+        .section-heading p {
+            color: #94a3b8;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .form-section {
+            margin-bottom: 34px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #40536a;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .optional {
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce5ef;
+            border-radius: 9px;
+            background: #fbfdff;
+            color: #263b54;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #a6b2c1;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #378ac5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(55, 138, 197, 0.11);
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .field-hint {
+            color: #9aa6b6;
+            font-size: 10px;
+            margin-top: 7px;
+        }
+
+        /* ACTIONS */
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding-top: 24px;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .action-note {
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 11px;
+        }
+
+        button,
+        .cancel {
+            border: none;
+            padding: 13px 21px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        button {
+            background: #2479b9;
+            color: white;
+        }
+
+        button:hover {
+            background: #195f96;
+            transform: translateY(-2px);
+        }
+
+        .cancel {
+            background: #edf2f7;
+            color: #52657a;
+        }
+
+        .cancel:hover {
+            background: #e0e8f0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 10px;
+            color: #9aa6b6;
+            font-size: 11px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 650px) {
+            .topbar {
+                padding: 16px 5%;
+            }
+
+            .main {
+                margin: 25px auto;
+                padding: 0 15px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .form-banner {
+                padding: 22px;
+            }
+
+            .form-body {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 19px;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .buttons {
+                width: 100%;
+            }
+
+            .buttons button,
+            .buttons .cancel {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <a th:href="@{/candidate/dashboard}" class="logo">
+            Hire<span>Flow.</span>
+        </a>
+
+        <a th:href="@{/candidate/profile}" class="back-link">
+            ← Back to Profile
+        </a>
+
+    </header>
+
+    <main class="main">
+
+        <!-- PAGE HEADING -->
+
+        <section class="page-heading">
+
+            <div class="eyebrow">CANDIDATE ACCOUNT</div>
+
+            <h1>Edit Your Profile</h1>
+
+            <p>
+                Build your professional identity and help recruiters
+                understand your skills, experience and career goals.
+            </p>
+
+        </section>
+
+        <!-- FORM CARD -->
+
+        <section class="form-card">
+
+            <div class="form-banner">
+
+                <h2>Professional Profile Details</h2>
+
+                <p>
+                    Keep your career information updated to present
+                    yourself professionally to potential employers.
+                </p>
+
+            </div>
+
+            <div class="form-body">
+
+                <form th:action="@{/candidate/profile/save}"
+                      th:object="${profileForm}"
+                      method="post">
+
+                    <!-- CAREER DETAILS -->
+
+                    <section class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-icon">▤</div>
+
+                            <div>
+                                <h3>Career & Education</h3>
+                                <p>Your academic background and experience</p>
+                            </div>
+
+                        </div>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label>Qualification</label>
+
+                                <input type="text"
+                                       th:field="*{qualification}"
+                                       placeholder="e.g. B.E Computer Science">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label>Experience (Years)</label>
+
+                                <input type="number"
+                                       th:field="*{experienceYears}"
+                                       step="0.1"
+                                       min="0"
+                                       placeholder="e.g. 0">
+
+                            </div>
+
+                            <div class="form-group full">
+
+                                <label>Technical Skills</label>
+
+                                <input type="text"
+                                       th:field="*{skills}"
+                                       placeholder="Java, Spring Boot, MySQL, AWS">
+
+                                <span class="field-hint">
+                                    Separate your skills using commas.
+                                </span>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label>Current Location</label>
+
+                                <input type="text"
+                                       th:field="*{location}"
+                                       placeholder="e.g. Chennai">
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- PROFESSIONAL LINKS -->
+
+                    <section class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-icon">↗</div>
+
+                            <div>
+                                <h3>Professional Links</h3>
+                                <p>Share your professional presence</p>
+                            </div>
+
+                        </div>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label>
+                                    LinkedIn Profile URL
+                                    <span class="optional">Optional</span>
+                                </label>
+
+                                <input type="url"
+                                       th:field="*{linkedinUrl}"
+                                       placeholder="https://linkedin.com/in/yourprofile">
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label>
+                                    Resume URL
+                                    <span class="optional">Optional</span>
+                                </label>
+
+                                <input type="url"
+                                       th:field="*{resumeUrl}"
+                                       placeholder="Enter your resume URL">
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- SUMMARY -->
+
+                    <section class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-icon">✎</div>
+
+                            <div>
+                                <h3>Professional Summary</h3>
+                                <p>Introduce yourself to potential recruiters</p>
+                            </div>
+
+                        </div>
+
+                        <div class="form-grid">
+
+                            <div class="form-group full">
+
+                                <label>About Me</label>
+
+                                <textarea th:field="*{summary}"
+                                          placeholder="Write a short introduction about your education, skills and career goals..."></textarea>
+
+                                <span class="field-hint">
+                                    Highlight your strengths, technical knowledge and career interests.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- ACTION BUTTONS -->
+
+                    <div class="form-actions">
+
+                        <p class="action-note">
+                            Review your information before saving.
+                        </p>
+
+                        <div class="buttons">
+
+                            <a th:href="@{/candidate/profile}" class="cancel">
+                                Cancel
+                            </a>
+
+                            <button type="submit">
+                                Save Profile ✓
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow. All rights reserved.
+    </footer>
+
+</body>
+</html>s

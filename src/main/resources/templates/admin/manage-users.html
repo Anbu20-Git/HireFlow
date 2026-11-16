@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f6fc;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            width: 255px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(180deg, #172554, #312e81);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 45px;
+        }
+
+        .logo span {
+            color: #a5f3fc;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            letter-spacing: 1.5px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            margin-bottom: 7px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #4f46e5;
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .menu-icon {
+            font-size: 17px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .logout {
+            margin-top: auto;
+        }
+
+        .logout button {
+            width: 100%;
+            padding: 13px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .logout button:hover {
+            background: #4f46e5;
+        }
+
+        .main {
+            margin-left: 255px;
+            padding: 32px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            color: #172554;
+            font-weight: 800;
+        }
+
+        .topbar p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .profile {
+            background: white;
+            padding: 11px 17px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 18px rgba(15,23,42,0.05);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .profile strong {
+            font-size: 13px;
+        }
+
+        .profile small {
+            display: block;
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 23px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .breadcrumb a {
+            text-decoration: none;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .welcome {
+            background: linear-gradient(110deg, #172554, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px 34px;
+            border-radius: 17px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(79,70,229,0.15);
+        }
+
+        .welcome h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #e0e7ff;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #172554;
+            margin-bottom: 17px;
+            font-weight: 700;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #edf0f7;
+            box-shadow: 0 4px 18px rgba(15,23,42,0.04);
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .summary-card h2 {
+            font-size: 29px;
+            color: #172554;
+            margin-top: 12px;
+        }
+
+        .summary-icon {
+            font-size: 21px;
+            margin-bottom: 12px;
+            display: inline-flex;
+            width: 42px;
+            height: 42px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #ede9fe;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #edf0f7;
+            box-shadow: 0 4px 18px rgba(15,23,42,0.04);
+        }
+
+        .table-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .table-heading h3 {
+            font-size: 16px;
+            color: #172554;
+        }
+
+        .table-heading span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        th, td {
+            padding: 16px 13px;
+            text-align: left;
+            border-bottom: 1px solid #edf0f5;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        th {
+            color: #64748b;
+            background: #f8fafc;
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        td {
+            color: #334155;
+        }
+
+        tbody tr:hover {
+            background: #fafaff;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .ADMIN {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .RECRUITER {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .CANDIDATE {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .active {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #dcfce7;
+            color: #15803d;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .inactive {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .action-button {
+            border: none;
+            padding: 9px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .deactivate-button {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .activate-button {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .action-button:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .protected {
+            color: #7c3aed;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .message {
+            padding: 13px 16px;
+            margin-bottom: 18px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        @media(max-width: 1100px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 850px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .logout {
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 25px 20px;
+            }
+        }
+
+        @media(max-width: 550px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .welcome {
+                padding: 25px;
+            }
+
+            .table-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">Hire<span>Flow.</span></div>
+
+    <div class="menu-title">ADMINISTRATION</div>
+
+    <nav class="menu">
+
+        <a th:href="@{/admin/dashboard}">
+            <span class="menu-icon">▦</span> Dashboard
+        </a>
+
+        <a th:href="@{/admin/users}" class="active">
+            <span class="menu-icon">👥</span> Manage Users
+        </a>
+
+        <a th:href="@{/admin/companies}">
+            <span class="menu-icon">🏢</span> Manage Companies
+        </a>
+
+        <a th:href="@{/admin/jobs}">
+            <span class="menu-icon">💼</span> Manage Jobs
+        </a>
+
+        <a th:href="@{/admin/applications}">
+            <span class="menu-icon">📄</span> Manage Applications
+        </a>
+
+        <a th:href="@{/admin/interviews}">
+            <span class="menu-icon">📅</span> Manage Interviews
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">📊</span> Reports & Analytics
+        </a>
+
+        <a href="#">
+            <span class="menu-icon">⚙️</span> Settings
+        </a>
+
+    </nav>
+
+    <div class="logout">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">↪ &nbsp; Logout</button>
+        </form>
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+
+        <div>
+            <h1>Manage Users</h1>
+            <p>View, monitor and manage registered HireFlow accounts.</p>
+        </div>
+
+        <div class="profile">
+            <div class="avatar">A</div>
+            <div>
+                <strong>Administrator</strong>
+                <small>System Admin</small>
+            </div>
+        </div>
+
+    </header>
+
+    <div class="breadcrumb">
+        <a th:href="@{/admin/dashboard}">Dashboard</a> &nbsp; / &nbsp; Manage Users
+    </div>
+
+    <div th:if="${successMessage}" class="message success"
+         th:text="${successMessage}"></div>
+
+    <div th:if="${errorMessage}" class="message error"
+         th:text="${errorMessage}"></div>
+
+    <section class="welcome">
+        <h2>User Management 👥</h2>
+        <p>
+            Manage registered candidates, recruiters and administrators.
+            Monitor account details and control account activation status.
+        </p>
+    </section>
+
+    <h2 class="section-title">User Overview</h2>
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-icon">👥</div>
+            <p>Total Registered Users</p>
+            <h2 th:text="${totalUsers}">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">🛡️</div>
+            <p>Administrator Accounts</p>
+            <h2 th:text="${#lists.size(users.?[role.name() == 'ADMIN'])}">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">✅</div>
+            <p>Active Accounts</p>
+            <h2 th:text="${#lists.size(users.?[active == true])}">0</h2>
+        </div>
+
+    </section>
+
+    <section class="table-container">
+
+        <div class="table-heading">
+            <h3>Registered Users</h3>
+            <span>
+                Total: <strong th:text="${totalUsers}">0</strong> users
+            </span>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Registered Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="user : ${users}">
+
+                        <td th:text="${user.id}"></td>
+
+                        <td>
+                            <strong th:text="${user.name}"></strong>
+                        </td>
+
+                        <td th:text="${user.email}"></td>
+
+                        <td th:text="${user.phone != null ? user.phone : 'N/A'}"></td>
+
+                        <td>
+                            <span class="role"
+                                  th:classappend="${user.role}"
+                                  th:text="${user.role}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:if="${user.active == true}"
+                                  class="active">Active</span>
+
+                            <span th:unless="${user.active == true}"
+                                  class="inactive">Inactive</span>
+                        </td>
+
+                        <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm') : 'N/A'}"></td>
+
+                        <td>
+
+                            <form th:if="${user.role.name() != 'ADMIN'}"
+                                  th:action="@{/admin/users/{id}/toggle-status(id=${user.id})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="action-button"
+                                        th:classappend="${user.active == true ? ' deactivate-button' : ' activate-button'}"
+                                        th:text="${user.active == true ? 'Deactivate' : 'Activate'}">
+                                </button>
+
+                            </form>
+
+                            <span th:if="${user.role.name() == 'ADMIN'}"
+                                  class="protected">
+                                Protected
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="8" class="empty">
+                            No users registered yet.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

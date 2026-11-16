@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Management | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #173d36;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #71817d;
+            font-size: 14px;
+        }
+
+        /* SECTION CARD */
+
+        .section-card {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 18px rgba(20, 60, 50, 0.05);
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .section-heading h2 {
+            color: #173d36;
+            font-size: 19px;
+            margin-bottom: 7px;
+        }
+
+        .section-heading p {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        .section-icon {
+            background: #d8f5ed;
+            color: #087f68;
+            padding: 11px 14px;
+            border-radius: 9px;
+            font-size: 20px;
+        }
+
+        /* CANDIDATE AND INTERVIEW CARDS */
+
+        .candidate-card,
+        .interview-card {
+            border: 1px solid #e4ece8;
+            border-radius: 12px;
+            padding: 23px;
+            margin-bottom: 18px;
+            transition: 0.2s;
+        }
+
+        .candidate-card:hover,
+        .interview-card:hover {
+            border-color: #9bdccc;
+            box-shadow: 0 5px 15px rgba(20, 60, 50, 0.06);
+        }
+
+        .candidate-card:last-child,
+        .interview-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .person-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .person-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: #d8f5ed;
+            color: #087f68;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .person-info h3 {
+            color: #173d36;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .person-info p {
+            color: #82918d;
+            font-size: 12px;
+        }
+
+        /* DETAILS GRID */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            background: #f8fbfa;
+            border-radius: 9px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item label {
+            display: block;
+            color: #82918d;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .detail-item span,
+        .detail-item a {
+            color: #354d46;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-item a {
+            color: #087f68;
+            text-decoration: none;
+        }
+
+        .detail-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* STATUS BADGES */
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status.scheduled {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status.completed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status.cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* SCHEDULE BUTTON */
+
+        .schedule-btn {
+            display: inline-block;
+            background: #087f68;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .schedule-btn:hover {
+            background: #066653;
+            transform: translateY(-1px);
+        }
+
+        /* UPDATE FORM */
+
+        .update-form {
+            background: #f8fbfa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e7efec;
+        }
+
+        .update-form h4 {
+            color: #173d36;
+            font-size: 14px;
+            margin-bottom: 17px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #354d46;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #dce7e3;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #243b36;
+            background: white;
+            outline: none;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: #0d967a;
+            box-shadow: 0 0 0 3px rgba(13,150,122,0.09);
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .update-btn {
+            background: #087f68;
+            color: white;
+            border: none;
+            padding: 11px 19px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .update-btn:hover {
+            background: #066653;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .empty h3 {
+            color: #173d36;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .main-container {
+                margin-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+
+            .candidate-card,
+            .interview-card {
+                padding: 17px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}">🏢 Company Profile</a>
+
+            <a th:href="@{/recruiter/jobs}">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}" class="active">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <div class="page-header">
+
+            <h1>Interview Management</h1>
+
+            <p>Schedule interviews, track progress and manage candidate feedback.</p>
+
+        </div>
+
+        <!-- SHORTLISTED CANDIDATES -->
+
+        <section class="section-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Shortlisted Candidates</h2>
+                    <p>Schedule interviews with candidates who passed the initial screening.</p>
+                </div>
+
+                <div class="section-icon">👥</div>
+
+            </div>
+
+            <div th:if="${#lists.isEmpty(shortlistedApplications)}" class="empty">
+
+                <div class="empty-icon">📋</div>
+
+                <h3>No Shortlisted Candidates</h3>
+
+                <p>Shortlisted candidates will appear here when applications are updated.</p>
+
+            </div>
+
+            <div th:each="app : ${shortlistedApplications}" class="candidate-card">
+
+                <div class="person-header">
+
+                    <div class="person-info">
+
+                        <div class="avatar">👤</div>
+
+                        <div>
+                            <h3 th:text="${app.candidate.name}">Candidate Name</h3>
+                            <p>Shortlisted Candidate</p>
+                        </div>
+
+                    </div>
+
+                    <span class="status scheduled">Ready for Interview</span>
+
+                </div>
+
+                <div class="details-grid">
+
+                    <div class="detail-item">
+
+                        <label>Email Address</label>
+
+                        <span th:text="${app.candidate.email}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Job Position</label>
+
+                        <span th:text="${app.job.jobTitle}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Company</label>
+
+                        <span th:text="${app.job.company.companyName}"></span>
+
+                    </div>
+
+                </div>
+
+                <a th:href="@{/recruiter/interviews/schedule/{id}(id=${app.id})}"
+                   class="schedule-btn">
+                    + Schedule Interview
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- SCHEDULED INTERVIEWS -->
+
+        <section class="section-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Scheduled Interviews</h2>
+                    <p>View interview details and update interview status and feedback.</p>
+                </div>
+
+                <div class="section-icon">📅</div>
+
+            </div>
+
+            <div th:if="${#lists.isEmpty(interviews)}" class="empty">
+
+                <div class="empty-icon">📅</div>
+
+                <h3>No Interviews Scheduled</h3>
+
+                <p>Your scheduled candidate interviews will appear here.</p>
+
+            </div>
+
+            <div th:each="interview : ${interviews}" class="interview-card">
+
+                <div class="person-header">
+
+                    <div class="person-info">
+
+                        <div class="avatar">👤</div>
+
+                        <div>
+                            <h3 th:text="${interview.application.candidate.name}">
+                                Candidate Name
+                            </h3>
+                            <p>Interview Details</p>
+                        </div>
+
+                    </div>
+
+                    <span class="status"
+                          th:classappend="${#strings.toLowerCase(interview.status.toString())}"
+                          th:text="${interview.status}">
+                        SCHEDULED
+                    </span>
+
+                </div>
+
+                <!-- INTERVIEW INFORMATION -->
+
+                <div class="details-grid">
+
+                    <div class="detail-item">
+
+                        <label>Job Position</label>
+
+                        <span th:text="${interview.application.job.jobTitle}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Date &amp; Time</label>
+
+                        <span th:text="${#temporals.format(interview.interviewDate, 'dd MMM yyyy, hh:mm a')}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Interview Mode</label>
+
+                        <span th:text="${interview.interviewMode}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Interviewer</label>
+
+                        <span th:text="${interview.interviewerName}"></span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <label>Meeting Link</label>
+
+                        <a th:if="${interview.meetingLink != null and !interview.meetingLink.isEmpty()}"
+                           th:href="${interview.meetingLink}"
+                           th:text="${interview.meetingLink}"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                        </a>
+
+                        <span th:if="${interview.meetingLink == null or interview.meetingLink.isEmpty()}">
+                            Not available
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- UPDATE INTERVIEW -->
+
+                <form class="update-form"
+                      th:action="@{/recruiter/interviews/{id}/update(id=${interview.id})}"
+                      method="post">
+
+                    <h4>Update Interview</h4>
+
+                    <div class="form-group">
+
+                        <label>Interview Status</label>
+
+                        <select name="status">
+
+                            <option value="SCHEDULED"
+                                    th:selected="${interview.status.name() == 'SCHEDULED'}">
+                                Scheduled
+                            </option>
+
+                            <option value="COMPLETED"
+                                    th:selected="${interview.status.name() == 'COMPLETED'}">
+                                Completed
+                            </option>
+
+                            <option value="CANCELLED"
+                                    th:selected="${interview.status.name() == 'CANCELLED'}">
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Interview Feedback</label>
+
+                        <textarea name="feedback"
+                                  placeholder="Enter interview feedback..."
+                                  th:text="${interview.feedback}"></textarea>
+
+                    </div>
+
+                    <button type="submit" class="update-btn">
+                        ✓ Update Interview
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

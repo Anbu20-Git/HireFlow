@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recruiter Dashboard | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #1e293b;
+        }
+
+        /* TOP NAVIGATION */
+
+        .top-nav {
+            height: 75px;
+            background: #102f2b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            color: white;
+            font-size: 27px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #5eead4;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #cbd5d1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 11px 13px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: #1f554c;
+            color: #ffffff;
+        }
+
+        .nav-menu .create-link {
+            background: #5eead4;
+            color: #102f2b;
+            margin-left: 8px;
+        }
+
+        .nav-menu .create-link:hover {
+            background: #99f6e4;
+            color: #102f2b;
+        }
+
+        .logout form {
+            margin: 0;
+        }
+
+        .logout button {
+            background: transparent;
+            border: 1px solid #52756e;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .logout button:hover {
+            background: #1f554c;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            max-width: 1450px;
+            margin: auto;
+            padding: 35px 6%;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 27px;
+            gap: 20px;
+        }
+
+        .page-heading h1 {
+            color: #102f2b;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .page-heading p {
+            color: #71817d;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 10px 17px;
+            border-radius: 12px;
+            border: 1px solid #e5eeeb;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #d1fae5;
+            color: #047857;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .profile strong {
+            display: block;
+            font-size: 13px;
+            color: #102f2b;
+        }
+
+        .profile small {
+            display: block;
+            color: #84938f;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* WELCOME BANNER */
+
+        .welcome {
+            background: linear-gradient(110deg, #123c35, #16715d);
+            border-radius: 20px;
+            padding: 37px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border: 35px solid rgba(255,255,255,0.06);
+            border-radius: 50%;
+            right: 170px;
+            top: -130px;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-label {
+            color: #99f6e4;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 13px;
+        }
+
+        .welcome h2 {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .welcome p {
+            color: #d1fae5;
+            font-size: 13px;
+            line-height: 1.8;
+            max-width: 610px;
+        }
+
+        .welcome-button {
+            position: relative;
+            z-index: 1;
+            background: #5eead4;
+            color: #102f2b;
+            padding: 14px 20px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+
+        .welcome-button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        /* STATISTICS */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            color: #163b34;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .section-heading span {
+            color: #84938f;
+            font-size: 11px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            border: 1px solid #e5eeeb;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(16,47,43,0.07);
+        }
+
+        .stat-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 17px;
+        }
+
+        .icon-teal {
+            background: #ccfbf1;
+        }
+
+        .icon-blue {
+            background: #dbeafe;
+        }
+
+        .icon-orange {
+            background: #ffedd5;
+        }
+
+        .icon-purple {
+            background: #ede9fe;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: #71817d;
+            font-weight: 600;
+        }
+
+        .stat-card h2 {
+            font-size: 30px;
+            color: #123c35;
+            margin-top: 9px;
+            font-weight: 800;
+        }
+
+        /* DASHBOARD CONTENT */
+
+		.content-grid {
+		    display: grid;
+		    grid-template-columns: 1fr;
+		    gap: 22px;
+		}
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #e5eeeb;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+            gap: 10px;
+        }
+
+        .panel-header h3 {
+            font-size: 16px;
+            color: #163b34;
+        }
+
+        .panel-header a {
+            text-decoration: none;
+            color: #0f8b72;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* JOB LIST */
+
+        .job {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 17px 0;
+            border-bottom: 1px solid #edf2f0;
+        }
+
+        .job:last-child {
+            border-bottom: none;
+        }
+
+        .job-info {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .job-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background: #e0f2f1;
+            color: #0f766e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .job h4 {
+            color: #163b34;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .job p {
+            color: #84938f;
+            font-size: 11px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tag-open {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .tag-closed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .tag-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .empty-message {
+            color: #84938f;
+            font-size: 13px;
+            padding: 20px 0;
+        }
+
+        /* QUICK ACTIONS */
+
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 16px;
+            background: #f5faf8;
+            border: 1px solid #e8f2ee;
+            border-radius: 11px;
+            text-decoration: none;
+            color: #24463e;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .quick-action:hover {
+            background: #e0f2f1;
+            border-color: #99f6e4;
+            transform: translateX(3px);
+        }
+
+        .quick-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .quick-action strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .quick-action small {
+            display: block;
+            font-size: 10px;
+            color: #84938f;
+            margin-top: 4px;
+        }
+
+        .quick-arrow {
+            margin-left: auto;
+            color: #0f8b72;
+            font-size: 18px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #94a3a0;
+            font-size: 11px;
+            margin-top: 35px;
+            padding: 20px;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media(max-width: 1100px) {
+            .top-nav {
+                padding: 0 3%;
+            }
+
+            .nav-menu {
+                gap: 2px;
+            }
+
+            .nav-menu a {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+
+            .main {
+                padding: 30px 3%;
+            }
+        }
+
+        @media(max-width: 850px) {
+            .top-nav {
+                height: auto;
+                padding: 18px 5%;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                order: 3;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 550px) {
+            .main {
+                padding: 25px 17px;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .welcome {
+                padding: 25px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .welcome h2 {
+                font-size: 22px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .stat-card h2 {
+                font-size: 25px;
+            }
+
+            .job {
+                align-items: flex-start;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION -->
+
+    <header class="top-nav">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            Hire<span>Flow.</span>
+        </a>
+
+        <nav class="nav-menu">
+
+            <a th:href="@{/recruiter/dashboard}" class="active">
+                ▦ Dashboard
+            </a>
+
+            <a th:href="@{/recruiter/company}">
+                🏢 Company Profile
+            </a>
+
+            <a th:href="@{/recruiter/jobs}">
+                💼 Manage Jobs
+            </a>
+
+            <a th:href="@{/recruiter/applicants}">
+                👥 Applicants
+            </a>
+
+            <a th:href="@{/recruiter/interviews}">
+                📅 Interviews
+            </a>
+
+            <a th:href="@{/recruiter/notifications}">
+                🔔 Notifications
+            </a>
+
+            <a th:href="@{/recruiter/jobs/new}" class="create-link">
+                + Create Job
+            </a>
+
+        </nav>
+
+        <div class="logout">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">↪ Logout</button>
+            </form>
+        </div>
+
+    </header>
+
+    <main class="main">
+
+        <!-- PAGE HEADING -->
+
+        <header class="page-heading">
+
+            <div>
+                <h1>Recruiter Dashboard</h1>
+                <p>Manage your hiring activities and discover the right talent.</p>
+            </div>
+
+            <div class="profile">
+
+                <div class="avatar">R</div>
+
+                <div>
+                    <strong>HR Manager</strong>
+                    <small>Recruiter Account</small>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- WELCOME BANNER -->
+
+        <section class="welcome">
+
+            <div class="welcome-content">
+
+                <div class="welcome-label">RECRUITER WORKSPACE</div>
+
+                <h2>Welcome to HireFlow! 👋</h2>
+
+                <p>
+                    Build your team with the right talent.
+                    Publish opportunities, review applications
+                    and connect with promising candidates.
+                </p>
+
+            </div>
+
+            <a th:href="@{/recruiter/jobs/new}" class="welcome-button">
+                + Create New Job
+            </a>
+
+        </section>
+
+        <!-- RECRUITMENT STATISTICS -->
+
+        <div class="section-heading">
+
+            <h2>Recruitment Overview</h2>
+
+            <span>Your hiring activity at a glance</span>
+
+        </div>
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon icon-teal">💼</div>
+
+                <p>Active Job Posts</p>
+
+                <h2 th:text="${activeJobPosts}">0</h2>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon icon-blue">👥</div>
+
+                <p>Total Applicants</p>
+
+                <h2 th:text="${totalApplicants}">0</h2>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon icon-orange">⭐</div>
+
+                <p>Shortlisted</p>
+
+                <h2 th:text="${shortlisted}">0</h2>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon icon-purple">📅</div>
+
+                <p>Upcoming Interviews</p>
+
+                <h2 th:text="${upcomingInterviews}">0</h2>
+
+            </div>
+
+        </section>
+
+        <!-- JOBS AND QUICK ACTIONS -->
+
+        <section class="content-grid">
+
+            <!-- RECENT JOB POSTINGS -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>Recent Job Postings</h3>
+
+                    <a th:href="@{/recruiter/jobs}">
+                        View All →
+                    </a>
+
+                </div>
+
+                <div class="job" th:each="job : ${recentJobs}">
+
+                    <div class="job-info">
+
+                        <div class="job-icon">💼</div>
+
+                        <div>
+
+                            <h4 th:text="${job.jobTitle}">Job Title</h4>
+
+                            <p>
+                                <span th:text="${job.company.companyName}">Company</span>
+                                ·
+                                <span th:text="${job.location}">Location</span>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <span class="tag"
+                          th:classappend="${job.status != null and job.status.name() == 'OPEN'} ? ' tag-open' :
+                                          (${job.status != null and job.status.name() == 'CLOSED'} ? ' tag-closed' : ' tag-draft')"
+                          th:text="${job.status}">
+                        OPEN
+                    </span>
+
+                </div>
+
+                <div class="empty-message"
+                     th:if="${#lists.isEmpty(recentJobs)}">
+                    No job postings available. Create your first job posting to get started.
+                </div>
+
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            © 2026 HireFlow. All Rights Reserved.
+        </footer>
+
+    </main>
+
+</body>
+</html>

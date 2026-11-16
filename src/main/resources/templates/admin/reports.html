@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(180deg, #172554, #312e81);
+            color: white;
+            padding: 28px 18px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            margin-bottom: 42px;
+            padding-left: 12px;
+        }
+
+        .menu-title {
+            font-size: 11px;
+            color: #a5b4fc;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 0 12px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 13px 14px;
+            margin: 5px 0;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255,255,255,0.17);
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 18px;
+            right: 18px;
+        }
+
+        .main {
+            margin-left: 260px;
+            padding: 30px 36px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar h2 {
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .profile {
+            background: white;
+            padding: 11px 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .profile span {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        .breadcrumb a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .welcome {
+            background: linear-gradient(110deg, #4338ca, #6366f1);
+            color: white;
+            padding: 28px 30px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 22px rgba(79,70,229,0.17);
+        }
+
+        .welcome h1 {
+            font-size: 24px;
+            margin-bottom: 9px;
+        }
+
+        .welcome p {
+            font-size: 13px;
+            color: #e0e7ff;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin: 28px 0 16px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+            border: 1px solid #edf0f7;
+        }
+
+        .stat-card .label {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 13px;
+        }
+
+        .stat-card h2 {
+            font-size: 29px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .stat-card .icon {
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 14px;
+            padding: 23px;
+            border: 1px solid #edf0f7;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+        }
+
+        .chart-card h3 {
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid #edf0f7;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.04);
+        }
+
+        .summary-card h3 {
+            font-size: 14px;
+            margin-bottom: 17px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row span {
+            color: #64748b;
+        }
+
+        .summary-row strong {
+            color: #1e293b;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 35px;
+            padding: 18px;
+        }
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .logout {
+                position: static;
+                margin-top: 15px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 22px;
+            }
+
+            .charts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .stats,
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 15px;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">HireFlow.</div>
+
+    <div class="menu-title">ADMINISTRATION</div>
+
+    <a th:href="@{/admin/dashboard}">▦ Dashboard</a>
+    <a th:href="@{/admin/users}">👥 Manage Users</a>
+    <a th:href="@{/admin/companies}">🏢 Manage Companies</a>
+    <a th:href="@{/admin/jobs}">💼 Manage Jobs</a>
+    <a th:href="@{/admin/applications}">📄 Manage Applications</a>
+    <a th:href="@{/admin/interviews}">📅 Manage Interviews</a>
+    <a th:href="@{/admin/reports}" class="active">📊 Reports & Analytics</a>
+    <a th:href="@{/admin/settings}">⚙️ Settings</a>
+
+    <a th:href="@{/logout}" class="logout">↪ Logout</a>
+
+</aside>
+
+<main class="main">
+
+    <div class="topbar">
+        <h2>Reports & Analytics</h2>
+
+        <div class="profile">
+            <strong>A</strong> &nbsp; Administrator<br>
+            <span>System Admin</span>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <a th:href="@{/admin/dashboard}">Dashboard</a>
+        &nbsp; / &nbsp; Reports & Analytics
+    </div>
+
+    <section class="welcome">
+        <h1>Reports & Analytics 📊</h1>
+        <p>
+            Monitor HireFlow platform performance through real-time database
+            statistics. Review user distribution, job activity, applications
+            and interview progress.
+        </p>
+    </section>
+
+    <h3 class="section-title">Platform Overview</h3>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <div class="icon">👥</div>
+            <div class="label">Total Registered Users</div>
+            <h2 th:text="${totalUsers}">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <div class="icon">🏢</div>
+            <div class="label">Total Companies</div>
+            <h2 th:text="${totalCompanies}">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <div class="icon">💼</div>
+            <div class="label">Total Job Postings</div>
+            <h2 th:text="${totalJobs}">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <div class="icon">📄</div>
+            <div class="label">Total Applications</div>
+            <h2 th:text="${totalApplications}">0</h2>
+        </div>
+
+    </section>
+
+    <h3 class="section-title">Visual Analytics</h3>
+
+    <section class="charts">
+
+        <div class="chart-card">
+            <h3>User Distribution</h3>
+            <div class="chart-container">
+                <canvas id="userChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Job Status Distribution</h3>
+            <div class="chart-container">
+                <canvas id="jobChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Application Status Distribution</h3>
+            <div class="chart-container">
+                <canvas id="applicationChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>Interview Status Distribution</h3>
+            <div class="chart-container">
+                <canvas id="interviewChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <h3 class="section-title">Detailed Reports</h3>
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <h3>👥 User Report</h3>
+
+            <div class="summary-row">
+                <span>Total Users</span>
+                <strong th:text="${totalUsers}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Candidates</span>
+                <strong th:text="${totalCandidates}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Recruiters</span>
+                <strong th:text="${totalRecruiters}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Administrators</span>
+                <strong th:text="${totalAdmins}">0</strong>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>💼 Job Report</h3>
+
+            <div class="summary-row">
+                <span>Total Jobs</span>
+                <strong th:text="${totalJobs}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Open Jobs</span>
+                <strong th:text="${openJobs}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Closed Jobs</span>
+                <strong th:text="${closedJobs}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Draft Jobs</span>
+                <strong th:text="${draftJobs}">0</strong>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>📄 Application Report</h3>
+
+            <div class="summary-row">
+                <span>Total Applications</span>
+                <strong th:text="${totalApplications}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Applied</span>
+                <strong th:text="${appliedApplications}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Shortlisted</span>
+                <strong th:text="${shortlistedApplications}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Rejected</span>
+                <strong th:text="${rejectedApplications}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Selected</span>
+                <strong th:text="${selectedApplications}">0</strong>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="summary-grid" style="margin-top: 18px;">
+
+        <div class="summary-card">
+            <h3>📅 Interview Report</h3>
+
+            <div class="summary-row">
+                <span>Total Interviews</span>
+                <strong th:text="${totalInterviews}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Scheduled</span>
+                <strong th:text="${scheduledInterviews}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Completed</span>
+                <strong th:text="${completedInterviews}">0</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Cancelled</span>
+                <strong th:text="${cancelledInterviews}">0</strong>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        © 2026 HireFlow. Admin Reports & Analytics.
+    </div>
+
+</main>
+
+<script th:inline="javascript">
+
+    const userData = [
+        [[${totalCandidates}]],
+        [[${totalRecruiters}]],
+        [[${totalAdmins}]]
+    ];
+
+    const jobData = [
+        [[${openJobs}]],
+        [[${closedJobs}]],
+        [[${draftJobs}]]
+    ];
+
+    const applicationData = [
+        [[${appliedApplications}]],
+        [[${shortlistedApplications}]],
+        [[${rejectedApplications}]],
+        [[${selectedApplications}]]
+    ];
+
+    const interviewData = [
+        [[${scheduledInterviews}]],
+        [[${completedInterviews}]],
+        [[${cancelledInterviews}]]
+    ];
+
+    function createDoughnutChart(elementId, labels, data) {
+        new Chart(document.getElementById(elementId), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    createDoughnutChart(
+        'userChart',
+        ['Candidates', 'Recruiters', 'Administrators'],
+        userData
+    );
+
+    createDoughnutChart(
+        'jobChart',
+        ['Open', 'Closed', 'Draft'],
+        jobData
+    );
+
+    createDoughnutChart(
+        'applicationChart',
+        ['Applied', 'Shortlisted', 'Rejected', 'Selected'],
+        applicationData
+    );
+
+    createDoughnutChart(
+        'interviewChart',
+        ['Scheduled', 'Completed', 'Cancelled'],
+        interviewData
+    );
+
+</script>
+
+</body>
+</html>

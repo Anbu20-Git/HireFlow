@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            color: #173d36;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #71817d;
+            font-size: 14px;
+        }
+
+        /* FORM CARD */
+
+        .form-card {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 4px 18px rgba(20, 60, 50, 0.05);
+        }
+
+        .form-header {
+            padding-bottom: 22px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .form-header h2 {
+            color: #173d36;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 22px;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            color: #354d46;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce7e3;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #243b36;
+            background: #fbfdfc;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #0d967a;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(13,150,122,0.09);
+        }
+
+        textarea {
+            min-height: 145px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* BUTTONS */
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            padding-top: 23px;
+            border-top: 1px solid #edf1ef;
+        }
+
+        .submit-btn {
+            background: #087f68;
+            color: white;
+            border: none;
+            padding: 13px 23px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #066653;
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            background: #edf3f1;
+            color: #354d46;
+            padding: 13px 23px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: #dce9e4;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .main-container {
+                margin-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .submit-btn,
+            .cancel-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}">🏢 Company Profile</a>
+
+            <a th:href="@{/recruiter/jobs}" class="active">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <div class="page-header">
+
+            <h1>Edit Job Posting</h1>
+
+            <p>Review and update the details of your existing job opportunity.</p>
+
+        </div>
+
+        <section class="form-card">
+
+            <div class="form-header">
+
+                <h2>Update Job Details</h2>
+
+                <p>Modify the required information and save your changes.</p>
+
+            </div>
+
+            <form th:action="@{/recruiter/jobs/update}"
+                  th:object="${job}"
+                  method="post">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-grid">
+
+                    <!-- JOB TITLE -->
+
+                    <div class="form-group full">
+
+                        <label>Job Title</label>
+
+                        <input type="text"
+                               th:field="*{jobTitle}"
+                               placeholder="Enter job title"
+                               required>
+
+                    </div>
+
+                    <!-- COMPANY -->
+
+                    <div class="form-group">
+
+                        <label>Company</label>
+
+                        <select name="companyId" required>
+
+                            <option th:each="company : ${companies}"
+                                    th:value="${company.id}"
+                                    th:text="${company.companyName}"
+                                    th:selected="${job.company.id == company.id}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+                        <label>Job Location</label>
+
+                        <input type="text"
+                               th:field="*{location}"
+                               placeholder="Enter job location"
+                               required>
+
+                    </div>
+
+                    <!-- JOB TYPE -->
+
+                    <div class="form-group">
+
+                        <label>Job Type</label>
+
+                        <select th:field="*{jobType}" required>
+
+                            <option value="FULL_TIME">Full Time</option>
+
+                            <option value="PART_TIME">Part Time</option>
+
+                            <option value="CONTRACT">Contract</option>
+
+                            <option value="INTERNSHIP">Internship</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- EXPERIENCE -->
+
+                    <div class="form-group">
+
+                        <label>Experience Required</label>
+
+                        <input type="text"
+                               th:field="*{experienceRequired}"
+                               placeholder="e.g. 0-2 Years"
+                               required>
+
+                    </div>
+
+                    <!-- MINIMUM SALARY -->
+
+                    <div class="form-group">
+
+                        <label>Minimum Salary (₹)</label>
+
+                        <input type="number"
+                               th:field="*{salaryMin}"
+                               min="0"
+                               step="0.01"
+                               required>
+
+                    </div>
+
+                    <!-- MAXIMUM SALARY -->
+
+                    <div class="form-group">
+
+                        <label>Maximum Salary (₹)</label>
+
+                        <input type="number"
+                               th:field="*{salaryMax}"
+                               min="0"
+                               step="0.01"
+                               required>
+
+                    </div>
+
+                    <!-- REQUIRED SKILLS -->
+
+                    <div class="form-group full">
+
+                        <label>Required Skills</label>
+
+                        <input type="text"
+                               th:field="*{requiredSkills}"
+                               placeholder="Java, Spring Boot, MySQL"
+                               required>
+
+                    </div>
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group full">
+
+                        <label>Job Description</label>
+
+                        <textarea th:field="*{description}"
+                                  placeholder="Describe job responsibilities and requirements..."
+                                  required></textarea>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="buttons">
+
+                    <a th:href="@{/recruiter/jobs}" class="cancel-btn">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="submit-btn">
+                        ✓ Update Job
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

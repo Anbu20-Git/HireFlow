@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Interviews | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fc;
+            color: #263b54;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: white;
+            padding: 17px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #e8eef5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #183b64;
+            text-decoration: none;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #f47761;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: #657991;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #2479b9;
+        }
+
+        .logout {
+            background: #fff0ed;
+            color: #e46b56 !important;
+            padding: 10px 15px;
+            border-radius: 7px;
+        }
+
+        /* MAIN */
+
+        .container {
+            max-width: 1100px;
+            margin: 38px auto;
+            padding: 0 22px;
+        }
+
+        .page-heading {
+            margin-bottom: 27px;
+        }
+
+        .eyebrow {
+            color: #2479b9;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .page-heading h1 {
+            font-size: 29px;
+            color: #183b64;
+            font-weight: 800;
+        }
+
+        .page-heading p {
+            color: #8492a6;
+            font-size: 13px;
+            margin-top: 9px;
+            line-height: 1.7;
+        }
+
+        /* INTRO BANNER */
+
+        .intro-banner {
+            background: linear-gradient(110deg, #1d568a, #398bc5);
+            border-radius: 15px;
+            padding: 27px 30px;
+            color: white;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .intro-banner h2 {
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .intro-banner p {
+            color: #e0f1ff;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .banner-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        /* SECTION */
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 19px;
+        }
+
+        .section-header h2 {
+            color: #183b64;
+            font-size: 17px;
+        }
+
+        .section-header span {
+            color: #8b9bad;
+            font-size: 11px;
+        }
+
+        /* INTERVIEW CARD */
+
+        .interview-card {
+            background: white;
+            border: 1px solid #e6edf5;
+            border-radius: 14px;
+            margin-bottom: 19px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(31, 75, 117, 0.035);
+            transition: 0.3s;
+        }
+
+        .interview-card:hover {
+            box-shadow: 0 10px 28px rgba(31, 75, 117, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            padding: 23px 25px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .job-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .company-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eaf4ff;
+            color: #2479b9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .job-info h2 {
+            color: #183b64;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .company-name {
+            color: #8392a5;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #e7f8ef;
+            color: #218354;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* DETAILS */
+
+        .card-body {
+            padding: 23px 25px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail {
+            background: #f7faff;
+            border: 1px solid #edf2f7;
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .detail label {
+            display: block;
+            color: #8a9aaf;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail span {
+            display: block;
+            color: #304c6b;
+            font-size: 12px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        /* CARD FOOTER */
+
+        .card-footer {
+            padding: 17px 25px;
+            background: #fbfdff;
+            border-top: 1px solid #edf2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .feedback {
+            background: #fff8ed;
+            border: 1px solid #f8e8cb;
+            border-radius: 9px;
+            padding: 15px;
+            margin-top: 18px;
+        }
+
+        .feedback strong {
+            color: #a36b20;
+            font-size: 11px;
+        }
+
+        .feedback p {
+            color: #806b4c;
+            font-size: 12px;
+            margin-top: 7px;
+            line-height: 1.7;
+        }
+
+        .meeting-link {
+            display: inline-block;
+            background: #2479b9;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .meeting-link:hover {
+            background: #195f96;
+        }
+
+        .meeting-note {
+            color: #91a0b2;
+            font-size: 11px;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            background: white;
+            border: 1px solid #e6edf5;
+            border-radius: 15px;
+            text-align: center;
+            padding: 65px 20px;
+        }
+
+        .empty-icon {
+            width: 75px;
+            height: 75px;
+            background: #eaf4ff;
+            color: #2479b9;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 33px;
+        }
+
+        .empty h2 {
+            color: #183b64;
+            font-size: 19px;
+        }
+
+        .empty p {
+            color: #8795a8;
+            font-size: 12px;
+            line-height: 1.8;
+            margin: 12px 0 22px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            background: #2479b9;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .browse-btn:hover {
+            background: #195f96;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 15px;
+            color: #9aa6b6;
+            font-size: 11px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 850px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                margin: 25px auto;
+                padding: 0 15px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .intro-banner {
+                padding: 22px;
+            }
+
+            .banner-icon {
+                display: none;
+            }
+
+            .card-top {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .card-footer {
+                padding: 17px 20px;
+            }
+
+            .meeting-link {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/candidate/dashboard}" class="logo">
+            Hire<span>Flow.</span>
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/candidate/dashboard}">Dashboard</a>
+
+            <a th:href="@{/candidate/profile}">My Profile</a>
+
+            <a th:href="@{/candidate/jobs}">Find Jobs</a>
+
+            <a th:href="@{/candidate/applications}">My Applications</a>
+
+            <a th:href="@{/candidate/saved-jobs}">Saved Jobs</a>
+
+            <a th:href="@{/candidate/interviews}" class="active">Interviews</a>
+
+            <a th:href="@{/candidate/notifications}">Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <main class="container">
+
+        <!-- PAGE HEADING -->
+
+        <section class="page-heading">
+
+            <div class="eyebrow">YOUR RECRUITMENT JOURNEY</div>
+
+            <h1>My Interviews</h1>
+
+            <p>
+                Keep track of your interview schedules, meeting details
+                and feedback from recruiters.
+            </p>
+
+        </section>
+
+        <!-- INTRO BANNER -->
+
+        <section class="intro-banner">
+
+            <div>
+                <h2>Every Interview Is An Opportunity! ✨</h2>
+
+                <p>
+                    Prepare well, be confident and take the next step
+                    towards your career goals.
+                </p>
+            </div>
+
+            <div class="banner-icon">📅</div>
+
+        </section>
+
+        <!-- INTERVIEW LIST -->
+
+        <div class="section-header">
+
+            <h2>Interview Schedule</h2>
+
+            <span>Stay prepared for your opportunities</span>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+
+        <div th:if="${#lists.isEmpty(interviews)}" class="empty">
+
+            <div class="empty-icon">📅</div>
+
+            <h2>No Interviews Scheduled</h2>
+
+            <p>
+                Your scheduled interviews will appear here.<br>
+                Keep applying for opportunities and take the next step in your career!
+            </p>
+
+            <a th:href="@{/candidate/jobs}" class="browse-btn">
+                Explore Jobs →
+            </a>
+
+        </div>
+
+        <!-- INTERVIEW CARDS -->
+
+        <div th:each="interview : ${interviews}"
+             class="interview-card">
+
+            <div class="card-top">
+
+                <div class="job-info">
+
+                    <div class="company-icon">▣</div>
+
+                    <div>
+
+                        <h2 th:text="${interview.application.job.jobTitle}">
+                            Job Title
+                        </h2>
+
+                        <p class="company-name"
+                           th:text="${interview.application.job.company.companyName}">
+                            Company Name
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <span class="status"
+                      th:text="${interview.status}">
+                    SCHEDULED
+                </span>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="details">
+
+                    <div class="detail">
+
+                        <label>📅 Interview Date & Time</label>
+
+                        <span th:text="${interview.interviewDate != null ? #temporals.format(interview.interviewDate, 'dd MMM yyyy, hh:mm a') : 'Not scheduled'}">
+                            Interview Date
+                        </span>
+
+                    </div>
+
+                    <div class="detail">
+
+                        <label>💻 Interview Mode</label>
+
+                        <span th:text="${interview.interviewMode}">
+                            Online
+                        </span>
+
+                    </div>
+
+                    <div class="detail">
+
+                        <label>👤 Interviewer</label>
+
+                        <span th:text="${interview.interviewerName != null ? interview.interviewerName : 'Not assigned'}">
+                            Interviewer
+                        </span>
+
+                    </div>
+
+                    <div class="detail">
+
+                        <label>📌 Interview Status</label>
+
+                        <span th:text="${interview.status}">
+                            SCHEDULED
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- FEEDBACK -->
+
+                <div th:if="${interview.feedback != null and !#strings.isEmpty(interview.feedback)}"
+                     class="feedback">
+
+                    <strong>Recruiter Feedback</strong>
+
+                    <p th:text="${interview.feedback}"></p>
+
+                </div>
+
+            </div>
+
+            <!-- CARD FOOTER -->
+
+            <div class="card-footer">
+
+                <span class="meeting-note">
+                    Review your interview details before joining.
+                </span>
+
+                <a th:if="${interview.meetingLink != null and !#strings.isEmpty(interview.meetingLink)}"
+                   th:href="${interview.meetingLink}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="meeting-link">
+
+                    Join Interview →
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow. Connecting Talent with Opportunity.
+    </footer>
+
+</body>
+</html>

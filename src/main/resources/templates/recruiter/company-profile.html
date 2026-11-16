@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #173d36;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #71817d;
+            font-size: 14px;
+        }
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* LEFT INFORMATION CARD */
+
+        .info-card,
+        .form-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(20, 60, 50, 0.06);
+            border: 1px solid #e7efec;
+        }
+
+        .info-card {
+            padding: 28px;
+        }
+
+        .company-icon {
+            width: 65px;
+            height: 65px;
+            background: #d8f5ed;
+            color: #087f68;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            color: #173d36;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #71817d;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .info-divider {
+            border: none;
+            border-top: 1px solid #edf1ef;
+            margin: 22px 0;
+        }
+
+        .info-label {
+            color: #087f68;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        /* FORM */
+
+        .form-card {
+            padding: 32px;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .form-header h2 {
+            color: #173d36;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            color: #354d46;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce7e3;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #243b36;
+            background: #fbfdfc;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #0d967a;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(13,150,122,0.09);
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-actions {
+            border-top: 1px solid #edf1ef;
+            padding-top: 23px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .submit-btn {
+            background: #087f68;
+            color: white;
+            border: none;
+            padding: 13px 23px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #066653;
+            transform: translateY(-1px);
+        }
+
+        /* EMPTY MESSAGE */
+
+        .message {
+            background: #fff8e7;
+            border: 1px solid #f2dfad;
+            color: #856404;
+            padding: 17px;
+            border-radius: 9px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}" class="active">
+                🏢 Company Profile
+            </a>
+
+            <a th:href="@{/recruiter/jobs}">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <div class="page-header">
+
+            <h1>Company Profile</h1>
+
+            <p>Manage your organization's information and keep your company details up to date.</p>
+
+        </div>
+
+        <div th:if="${companies.isEmpty()}" class="message">
+            No company is associated with your job listings yet.
+        </div>
+
+        <div class="profile-layout">
+
+            <!-- INFORMATION CARD -->
+
+            <aside class="info-card">
+
+                <div class="company-icon">🏢</div>
+
+                <h3>Company Information</h3>
+
+                <p>
+                    Maintain accurate company details to help candidates
+                    understand your organization and its opportunities.
+                </p>
+
+                <hr class="info-divider">
+
+                <div class="info-label">Profile Management</div>
+
+                <p>
+                    Keep your company name, industry, website and location
+                    updated.
+                </p>
+
+                <hr class="info-divider">
+
+                <div class="info-label">Company Description</div>
+
+                <p>
+                    Provide a clear overview of your organization,
+                    its services and work culture.
+                </p>
+
+            </aside>
+
+            <!-- COMPANY PROFILE FORM -->
+
+            <section class="form-card">
+
+                <div class="form-header">
+
+                    <h2>Organization Details</h2>
+
+                    <p>Update the information associated with your company.</p>
+
+                </div>
+
+                <form th:if="${company.id != null}"
+                      th:action="@{/recruiter/company/update}"
+                      th:object="${company}"
+                      method="post">
+
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label>Company Name</label>
+
+                            <input type="text"
+                                   th:field="*{companyName}"
+                                   placeholder="Enter company name"
+                                   required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Industry</label>
+
+                            <input type="text"
+                                   th:field="*{industry}"
+                                   placeholder="e.g. Information Technology">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Company Website</label>
+
+                            <input type="url"
+                                   th:field="*{website}"
+                                   placeholder="https://www.example.com">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Company Location</label>
+
+                            <input type="text"
+                                   th:field="*{location}"
+                                   placeholder="e.g. Chennai, India">
+
+                        </div>
+
+                        <div class="form-group full-width">
+
+                            <label>Company Description</label>
+
+                            <textarea th:field="*{description}"
+                                      placeholder="Tell candidates about your company, services and work culture..."></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button type="submit" class="submit-btn">
+                            ✓ Update Company Profile
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .container {
+            width: 1050px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(25,35,70,0.13);
+        }
+
+        .left-section {
+            background: linear-gradient(145deg, #172554, #3730a3, #6d28d9);
+            color: white;
+            padding: 55px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 31px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .brand span {
+            color: #a5f3fc;
+        }
+
+        .left-content h1 {
+            font-size: 36px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .left-content p {
+            color: #dddfff;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 23px;
+            font-size: 14px;
+        }
+
+        .benefit-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #a5f3fc;
+        }
+
+        .copyright {
+            color: #c7d2fe;
+            font-size: 12px;
+        }
+
+        .right-section {
+            padding: 42px 55px;
+        }
+
+        h2 {
+            color: #172554;
+            font-size: 29px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dbe2ef;
+            border-radius: 8px;
+            background: #f8fafc;
+            outline: none;
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 65px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 22px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .login-link a {
+            color: #4f46e5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        @media(max-width: 800px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .left-section {
+                min-height: 320px;
+                padding: 35px;
+            }
+
+            .right-section {
+                padding: 35px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left-section">
+
+        <div class="brand">
+            Hire<span>Flow.</span>
+        </div>
+
+        <div class="left-content">
+
+            <h1>
+                Your Journey to<br>
+                Success Starts Here.
+            </h1>
+
+            <p>
+                Create your HireFlow account and take the next
+                step towards discovering exciting career opportunities.
+            </p>
+
+            <div class="benefit">
+                <span class="benefit-icon">✓</span>
+                Build your professional profile
+            </div>
+
+            <div class="benefit">
+                <span class="benefit-icon">✓</span>
+                Discover job opportunities
+            </div>
+
+            <div class="benefit">
+                <span class="benefit-icon">✓</span>
+                Connect with recruiters
+            </div>
+
+        </div>
+
+        <div class="copyright">
+            © 2026 HireFlow. All rights reserved.
+        </div>
+
+    </div>
+
+    <div class="right-section">
+
+        <h2>Create Account</h2>
+
+        <p class="subtitle">
+            Join HireFlow and start building your career.
+        </p>
+
+        <div class="error-message"
+             th:if="${error}"
+             th:text="${error}">
+        </div>
+
+        <form th:action="@{/register}"
+              th:object="${registerRequest}"
+              method="post">
+
+            <div class="form-group">
+
+                <label for="name">Full Name</label>
+
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Enter your full name"
+                       autocomplete="name"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="email">Email Address</label>
+
+                <input type="email"
+                       id="email"
+                       th:field="*{email}"
+                       placeholder="Enter your email address"
+                       autocomplete="email"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="phone">Phone Number</label>
+
+                <input type="tel"
+                       id="phone"
+                       th:field="*{phone}"
+                       placeholder="Enter your phone number"
+                       autocomplete="tel"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="password">Password</label>
+
+                <div class="password-wrapper">
+
+                    <input type="password"
+                           id="password"
+                           th:field="*{password}"
+                           placeholder="Create a password"
+                           minlength="8"
+                           autocomplete="new-password"
+                           required>
+
+                    <button type="button"
+                            class="toggle-password"
+                            onclick="togglePassword()">
+                        Show
+                    </button>
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="register-button">
+                Create Account →
+            </button>
+
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a th:href="@{/login}">Sign In</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function togglePassword() {
+
+        const password = document.getElementById("password");
+        const button = document.querySelector(".toggle-password");
+
+        if (password.type === "password") {
+            password.type = "text";
+            button.textContent = "Hide";
+        } else {
+            password.type = "password";
+            button.textContent = "Show";
+        }
+    }
+</script>
+
+</body>
+</html>

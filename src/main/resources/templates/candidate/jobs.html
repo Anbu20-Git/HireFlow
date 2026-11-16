@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fc;
+            color: #263b54;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: white;
+            padding: 17px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #e8eef5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            color: #183b64;
+            text-decoration: none;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #f47761;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 21px;
+        }
+
+        .nav-links a {
+            color: #657991;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #2479b9;
+        }
+
+        .logout {
+            background: #fff0ed;
+            color: #e46b56 !important;
+            padding: 10px 14px;
+            border-radius: 7px;
+        }
+
+        /* MAIN */
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 22px;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(115deg, #1c568b, #398bc5);
+            padding: 34px;
+            border-radius: 16px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            border: 35px solid rgba(255,255,255,0.07);
+            right: -65px;
+            top: -105px;
+        }
+
+        .hero-label {
+            color: #d9efff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 13px;
+        }
+
+        .hero h1 {
+            font-size: 29px;
+            margin-bottom: 11px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            color: #e0f1ff;
+            font-size: 12px;
+            line-height: 1.8;
+            max-width: 570px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* SEARCH */
+
+        .search-card {
+            background: white;
+            padding: 25px;
+            border: 1px solid #e6edf5;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(31, 75, 117, 0.035);
+            margin-bottom: 32px;
+        }
+
+        .search-heading {
+            margin-bottom: 18px;
+        }
+
+        .search-heading h2 {
+            color: #183b64;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .search-heading p {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 13px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dce5ef;
+            border-radius: 9px;
+            background: #fbfdff;
+            color: #263b54;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #378ac5;
+            box-shadow: 0 0 0 3px rgba(55,138,197,0.10);
+            background: white;
+        }
+
+        .input-group input::placeholder {
+            color: #a6b2c1;
+        }
+
+        .search-btn {
+            border: none;
+            background: #2479b9;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 9px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #195f96;
+            transform: translateY(-2px);
+        }
+
+        /* JOB SECTION */
+
+        .job-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 19px;
+            gap: 15px;
+        }
+
+        .job-section-header h2 {
+            color: #183b64;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .job-section-header p {
+            color: #91a0b2;
+            font-size: 11px;
+        }
+
+        .result-count {
+            background: #eaf4ff;
+            color: #2479b9;
+            padding: 9px 13px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* JOB CARD */
+
+        .job-card {
+            background: white;
+            padding: 24px;
+            border-radius: 13px;
+            margin-bottom: 17px;
+            border: 1px solid #e6edf5;
+            box-shadow: 0 5px 20px rgba(31, 75, 117, 0.035);
+            transition: 0.3s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(31, 75, 117, 0.08);
+            border-color: #c8dff2;
+        }
+
+        .job-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .job-identity {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .company-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eaf4ff;
+            color: #2479b9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .job-title {
+            font-size: 16px;
+            color: #183b64;
+            margin-bottom: 7px;
+            font-weight: 800;
+        }
+
+        .company {
+            color: #8795a8;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            background: #e7f8ef;
+            color: #218354;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* JOB INFORMATION */
+
+        .job-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        .info-item {
+            background: #f7faff;
+            border: 1px solid #edf2f7;
+            padding: 13px;
+            border-radius: 9px;
+        }
+
+        .info-item label {
+            display: block;
+            color: #91a0b2;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
+        }
+
+        .info-item span {
+            color: #304c6b;
+            font-size: 11px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .description {
+            color: #71839a;
+            font-size: 11px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .job-footer {
+            border-top: 1px solid #edf2f7;
+            padding-top: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .job-footer-note {
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        .view-btn {
+            display: inline-block;
+            background: #2479b9;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #195f96;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border: 1px solid #e6edf5;
+            border-radius: 14px;
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            background: #eaf4ff;
+            color: #2479b9;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 19px;
+        }
+
+        .empty h3 {
+            color: #183b64;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #8795a8;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 30px 15px;
+            color: #9aa6b6;
+            font-size: 11px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 950px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .job-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 650px) {
+            .container {
+                margin: 23px auto;
+                padding: 0 15px;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+
+            .hero h1 {
+                font-size: 23px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .job-section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .job-card {
+                padding: 19px;
+            }
+
+            .job-top {
+                flex-direction: column;
+            }
+
+            .job-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .job-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .view-btn {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/candidate/dashboard}" class="logo">
+            Hire<span>Flow.</span>
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/candidate/dashboard}">Dashboard</a>
+
+            <a th:href="@{/candidate/profile}">My Profile</a>
+
+            <a th:href="@{/candidate/jobs}" class="active">Find Jobs</a>
+
+            <a th:href="@{/candidate/applications}">My Applications</a>
+
+            <a th:href="@{/candidate/saved-jobs}">Saved Jobs</a>
+
+            <a th:href="@{/candidate/interviews}">Interviews</a>
+
+            <a th:href="@{/candidate/notifications}">Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <main class="container">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-label">EXPLORE CAREER OPPORTUNITIES</div>
+
+            <h1>Find Your Next Opportunity ✨</h1>
+
+            <p>
+                Discover exciting job opportunities that match your skills,
+                experience and career ambitions. Your next career move starts here.
+            </p>
+
+        </section>
+
+        <!-- SEARCH -->
+
+        <section class="search-card">
+
+            <div class="search-heading">
+
+                <h2>Search Jobs</h2>
+
+                <p>Find opportunities by job title or location.</p>
+
+            </div>
+
+            <form th:action="@{/candidate/jobs}"
+                  method="get"
+                  class="search-form">
+
+                <div class="input-group">
+
+                    <input type="text"
+                           name="keyword"
+                           th:value="${keyword}"
+                           placeholder="Search job title...">
+
+                </div>
+
+                <div class="input-group">
+
+                    <input type="text"
+                           name="location"
+                           th:value="${location}"
+                           placeholder="Enter location...">
+
+                </div>
+
+                <button type="submit" class="search-btn">
+                    🔍 Search Jobs
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- JOB LIST -->
+
+        <section>
+
+            <div class="job-section-header">
+
+                <div>
+
+                    <h2>Available Opportunities</h2>
+
+                    <p>Explore jobs and find the right opportunity for you.</p>
+
+                </div>
+
+                <span class="result-count"
+                      th:text="${jobs.size() + ' jobs found'}">
+                    0 jobs found
+                </span>
+
+            </div>
+
+            <!-- EMPTY STATE -->
+
+            <div th:if="${jobs.isEmpty()}" class="empty">
+
+                <div class="empty-icon">🔍</div>
+
+                <h3>No Jobs Found</h3>
+
+                <p>
+                    We couldn't find any matching opportunities.<br>
+                    Try changing your search keywords or location.
+                </p>
+
+            </div>
+
+            <!-- JOB CARDS -->
+
+            <article th:each="job : ${jobs}"
+                     class="job-card">
+
+                <div class="job-top">
+
+                    <div class="job-identity">
+
+                        <div class="company-icon">▣</div>
+
+                        <div>
+
+                            <h3 class="job-title"
+                                th:text="${job.jobTitle}">
+                                Job Title
+                            </h3>
+
+                            <p class="company"
+                               th:text="${job.company.companyName}">
+                                Company Name
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <span class="status"
+                          th:text="${job.status}">
+                        OPEN
+                    </span>
+
+                </div>
+
+                <!-- JOB INFORMATION -->
+
+                <div class="job-info">
+
+                    <div class="info-item">
+
+                        <label>📍 Location</label>
+
+                        <span th:text="${job.location}">
+                            Location
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <label>💼 Job Type</label>
+
+                        <span th:text="${job.jobType}">
+                            Job Type
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <label>⭐ Experience</label>
+
+                        <span th:text="${job.experienceRequired}">
+                            Experience
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <label>💰 Salary Range</label>
+
+                        <span>
+                            ₹<span th:text="${job.salaryMin}">0</span>
+                            -
+                            ₹<span th:text="${job.salaryMax}">0</span>
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- DESCRIPTION -->
+
+                <p class="description"
+                   th:text="${job.description}">
+                    Job description
+                </p>
+
+                <!-- FOOTER -->
+
+                <div class="job-footer">
+
+                    <span class="job-footer-note">
+                        Explore the complete job requirements and details.
+                    </span>
+
+                    <a th:href="@{/candidate/jobs/{id}(id=${job.id})}"
+                       class="view-btn">
+                        View Details →
+                    </a>
+
+                </div>
+
+            </article>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow. Connecting Talent with Opportunity.
+    </footer>
+
+</body>
+</html>

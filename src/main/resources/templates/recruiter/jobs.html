@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Jobs | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #173d36;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #71817d;
+            font-size: 14px;
+        }
+
+        .create-btn {
+            display: inline-block;
+            background: #087f68;
+            color: white;
+            padding: 12px 19px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #066653;
+            transform: translateY(-1px);
+        }
+
+        /* JOB CARD */
+
+        .job-card {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 18px rgba(20, 60, 50, 0.05);
+            transition: 0.2s;
+        }
+
+        .job-card:hover {
+            border-color: #b5dfd3;
+            box-shadow: 0 7px 20px rgba(20, 60, 50, 0.08);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            color: #173d36;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .company {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        /* BADGES */
+
+        .details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 13px;
+            border-radius: 20px;
+            background: #e8f5f1;
+            color: #087f68;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-open {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-draft {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-closed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* DESCRIPTION */
+
+        .description {
+            border-top: 1px solid #edf1ef;
+            padding-top: 17px;
+            margin-bottom: 20px;
+        }
+
+        .description h4 {
+            color: #354d46;
+            font-size: 12px;
+            margin-bottom: 9px;
+        }
+
+        .description p {
+            color: #71817d;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: inline-block;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 17px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .edit-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .edit-btn:hover {
+            background: #bae6fd;
+        }
+
+        .close-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .close-btn:hover {
+            background: #fecaca;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 14px;
+            padding: 65px 20px;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(20, 60, 50, 0.04);
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 17px;
+        }
+
+        .empty h2 {
+            color: #173d36;
+            font-size: 19px;
+            margin-bottom: 9px;
+        }
+
+        .empty p {
+            color: #82918d;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            color: #82918d;
+            font-size: 12px;
+            padding: 25px;
+            border-top: 1px solid #e5eeea;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .main-container {
+                margin-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .job-card {
+                padding: 19px;
+            }
+
+            .job-title {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}">🏢 Company Profile</a>
+
+            <a th:href="@{/recruiter/jobs}" class="active">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <div class="page-header">
+
+            <div>
+                <h1>My Posted Jobs</h1>
+                <p>Manage and monitor the jobs posted by your company.</p>
+            </div>
+
+            <a th:href="@{/recruiter/jobs/new}" class="create-btn">
+                + Create New Job
+            </a>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+
+        <div th:if="${#lists.isEmpty(jobs)}" class="empty">
+
+            <div class="empty-icon">📭</div>
+
+            <h2>No Jobs Posted Yet</h2>
+
+            <p>Your posted jobs will appear here once you create them.</p>
+
+            <a th:href="@{/recruiter/jobs/new}" class="create-btn">
+                + Post Your First Job
+            </a>
+
+        </div>
+
+        <!-- JOB LIST -->
+
+        <div th:each="job : ${jobs}" class="job-card">
+
+            <div class="job-header">
+
+                <div>
+
+                    <h2 class="job-title" th:text="${job.jobTitle}">
+                        Java Backend Developer
+                    </h2>
+
+                    <p class="company"
+                       th:text="${job.company.companyName}">
+                        Tech Solutions Pvt Ltd
+                    </p>
+
+                </div>
+
+                <span class="badge"
+                      th:classappend="${job.status.name() == 'OPEN'} ? ' status-open' :
+                                      (${job.status.name() == 'DRAFT'} ? ' status-draft' : ' status-closed')"
+                      th:text="${job.status}">
+                    OPEN
+                </span>
+
+            </div>
+
+            <!-- JOB DETAILS -->
+
+            <div class="details">
+
+                <span class="badge"
+                      th:text="${'📍 ' + job.location}">
+                    Chennai
+                </span>
+
+                <span class="badge"
+                      th:text="${'💼 ' + job.jobType}">
+                    FULL_TIME
+                </span>
+
+                <span class="badge"
+                      th:text="${'🎓 ' + job.experienceRequired}">
+                    0-2 Years
+                </span>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+
+            <div class="description">
+
+                <h4>JOB DESCRIPTION</h4>
+
+                <p th:text="${job.description}">
+                    Job description
+                </p>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="actions">
+
+                <a th:href="@{/recruiter/jobs/edit/{id}(id=${job.id})}"
+                   class="action-btn edit-btn">
+                    ✏️ Edit Job
+                </a>
+
+                <form th:if="${job.status.name() == 'OPEN'}"
+                      th:action="@{/recruiter/jobs/close/{id}(id=${job.id})}"
+                      method="post"
+                      style="display:inline-block;">
+
+                    <button type="submit"
+                            class="action-btn close-btn"
+                            onclick="return confirm('Are you sure you want to close this job?')">
+                        🔒 Close Job
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow | Connecting Talent with Opportunity
+    </footer>
+
+</body>
+</html>

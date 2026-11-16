@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            color: #173d36;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 9px;
+        }
+
+        .page-header p {
+            color: #71817d;
+            font-size: 14px;
+        }
+
+        /* SUMMARY */
+
+        .summary-card {
+            background: linear-gradient(120deg, #087f68, #075b50);
+            color: white;
+            padding: 22px 25px;
+            border-radius: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 15px rgba(8, 127, 104, 0.13);
+        }
+
+        .summary-card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .summary-card p {
+            font-size: 12px;
+            color: #d1fae5;
+        }
+
+        .unread-count {
+            font-size: 30px;
+            font-weight: 800;
+            color: #5eead4;
+        }
+
+        /* NOTIFICATION CARD */
+
+        .notification {
+            background: white;
+            padding: 23px;
+            border: 1px solid #e7efec;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 12px rgba(20, 60, 50, 0.04);
+            transition: 0.2s;
+        }
+
+        .notification:hover {
+            border-color: #b5dfd3;
+            box-shadow: 0 5px 15px rgba(20, 60, 50, 0.07);
+        }
+
+        .notification.unread {
+            background: #f0faf7;
+            border-left: 5px solid #087f68;
+        }
+
+        .notification.read {
+            background: white;
+            border-left: 5px solid #dce8e3;
+        }
+
+        .notification-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .notification-message {
+            color: #263f37;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.7;
+            margin-bottom: 13px;
+        }
+
+        .notification-type {
+            display: inline-block;
+            background: #e0f2ec;
+            color: #087f68;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .notification-date {
+            color: #82918d;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .unread-label {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .read-label {
+            background: #edf2f0;
+            color: #71817d;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* BUTTON */
+
+        .read-button {
+            background: #087f68;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 15px;
+        }
+
+        .read-button:hover {
+            background: #066653;
+        }
+
+        .read-status {
+            display: inline-block;
+            color: #15803d;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        /* EMPTY STATE */
+
+        .empty {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 13px;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            color: #173d36;
+            font-size: 19px;
+            margin-bottom: 9px;
+        }
+
+        .empty p {
+            color: #82918d;
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            color: #82918d;
+            font-size: 12px;
+            padding: 25px;
+            border-top: 1px solid #e5eeea;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .main-container {
+                margin-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 23px;
+            }
+
+            .notification {
+                padding: 18px;
+            }
+
+            .summary-card {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}">🏢 Company Profile</a>
+
+            <a th:href="@{/recruiter/jobs}">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}" class="active">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <div>
+                <h1>🔔 Notifications</h1>
+                <p>Stay updated with your recruitment activities and latest alerts.</p>
+            </div>
+
+        </div>
+
+        <!-- UNREAD SUMMARY -->
+
+        <div class="summary-card">
+
+            <div>
+                <h3>Unread Notifications</h3>
+                <p>Notifications waiting for your attention</p>
+            </div>
+
+            <div class="unread-count"
+                 th:text="${unreadCount}">
+                0
+            </div>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+
+        <div th:if="${#lists.isEmpty(notifications)}" class="empty">
+
+            <div class="empty-icon">🔕</div>
+
+            <h2>No Notifications Yet</h2>
+
+            <p>You're all caught up! New recruitment updates will appear here.</p>
+
+        </div>
+
+        <!-- NOTIFICATION LIST -->
+
+        <div th:each="notification : ${notifications}"
+             class="notification"
+             th:classappend="${notification.read} ? ' read' : ' unread'">
+
+            <div class="notification-top">
+
+                <span class="notification-type"
+                      th:text="${notification.notificationType}">
+                    APPLICATION
+                </span>
+
+                <span th:if="${!notification.read}" class="unread-label">
+                    NEW
+                </span>
+
+                <span th:if="${notification.read}" class="read-label">
+                    READ
+                </span>
+
+            </div>
+
+            <p class="notification-message"
+               th:text="${notification.message}">
+            </p>
+
+            <p class="notification-date"
+               th:text="${notification.createdAt}">
+            </p>
+
+            <!-- MARK AS READ -->
+
+            <form th:if="${!notification.read}"
+                  th:action="@{/recruiter/notifications/read/{id}(id=${notification.id})}"
+                  method="post">
+
+                <button type="submit" class="read-button">
+                    ✓ Mark as Read
+                </button>
+
+            </form>
+
+            <span th:if="${notification.read}" class="read-status">
+                ✓ Already Read
+            </span>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow | Connecting Talent with Opportunity
+    </footer>
+
+</body>
+</html>

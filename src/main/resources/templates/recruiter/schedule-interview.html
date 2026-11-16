@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Interview | HireFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f7f6;
+            color: #243b36;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            background: #102f2b;
+            min-height: 72px;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .logo {
+            color: #5eead4;
+            font-size: 23px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d5e5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #5eead4;
+        }
+
+        .nav-links .logout {
+            background: #1e4841;
+            padding: 10px 16px;
+            border-radius: 7px;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 22px 50px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #087f68;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .back-link:hover {
+            color: #066653;
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e7efec;
+            border-radius: 15px;
+            padding: 32px;
+            box-shadow: 0 5px 22px rgba(20, 60, 50, 0.06);
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            color: #173d36;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 9px;
+        }
+
+        .page-heading p {
+            color: #82918d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* CANDIDATE DETAILS */
+
+        .candidate-details {
+            background: #f0faf7;
+            border: 1px solid #d7eee6;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 30px;
+        }
+
+        .candidate-details h3 {
+            color: #173d36;
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+        .candidate-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        .detail-item {
+            min-width: 0;
+        }
+
+        .detail-label {
+            display: block;
+            color: #82918d;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            color: #25483e;
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        /* FORM */
+
+        .section-title {
+            color: #173d36;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e8efec;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            color: #354d46;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce7e2;
+            border-radius: 8px;
+            background: #fbfdfc;
+            color: #263f37;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #087f68;
+            box-shadow: 0 0 0 3px rgba(8, 127, 104, 0.09);
+        }
+
+        input::placeholder {
+            color: #a2b0aa;
+        }
+
+        .optional {
+            color: #9aa7a2;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .submit-btn {
+            background: #087f68;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #066653;
+        }
+
+        .cancel-btn {
+            display: inline-block;
+            background: #edf3f0;
+            color: #52665e;
+            padding: 13px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cancel-btn:hover {
+            background: #dfeae4;
+        }
+
+        footer {
+            text-align: center;
+            color: #82918d;
+            font-size: 12px;
+            padding: 25px;
+            border-top: 1px solid #e5eeea;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                gap: 14px;
+                padding-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 17px 5%;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .form-card {
+                padding: 22px 18px;
+            }
+
+            .page-heading h1 {
+                font-size: 22px;
+            }
+
+            .candidate-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .submit-btn,
+            .cancel-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <a th:href="@{/recruiter/dashboard}" class="logo">
+            HireFlow.
+        </a>
+
+        <div class="nav-links">
+
+            <a th:href="@{/recruiter/dashboard}">▦ Dashboard</a>
+
+            <a th:href="@{/recruiter/company}">🏢 Company Profile</a>
+
+            <a th:href="@{/recruiter/jobs}">💼 Manage Jobs</a>
+
+            <a th:href="@{/recruiter/applicants}">👥 Applicants</a>
+
+            <a th:href="@{/recruiter/interviews}" class="active">📅 Interviews</a>
+
+            <a th:href="@{/recruiter/notifications}">🔔 Notifications</a>
+
+            <a th:href="@{/logout}" class="logout">Logout</a>
+
+        </div>
+
+    </nav>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-container">
+
+        <a th:href="@{/recruiter/interviews}" class="back-link">
+            ← Back to Interviews
+        </a>
+
+        <div class="form-card">
+
+            <!-- PAGE HEADER -->
+
+            <div class="page-heading">
+
+                <h1>📅 Schedule Interview</h1>
+
+                <p>
+                    Arrange an interview with the shortlisted candidate.
+                    Enter the interview details below.
+                </p>
+
+            </div>
+
+            <!-- CANDIDATE DETAILS -->
+
+            <div class="candidate-details">
+
+                <h3>👤 Candidate Information</h3>
+
+                <div class="candidate-grid">
+
+                    <div class="detail-item">
+
+                        <span class="detail-label">Candidate Name</span>
+
+                        <span class="detail-value"
+                              th:text="${app.candidate.name}">
+                        </span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <span class="detail-label">Email Address</span>
+
+                        <span class="detail-value"
+                              th:text="${app.candidate.email}">
+                        </span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <span class="detail-label">Job Position</span>
+
+                        <span class="detail-value"
+                              th:text="${app.job.jobTitle}">
+                        </span>
+
+                    </div>
+
+                    <div class="detail-item">
+
+                        <span class="detail-label">Company</span>
+
+                        <span class="detail-value"
+                              th:text="${app.job.company.companyName}">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- INTERVIEW FORM -->
+
+            <h3 class="section-title">Interview Details</h3>
+
+            <form th:action="@{/recruiter/interviews/schedule}" method="post">
+
+                <input type="hidden"
+                       name="applicationId"
+                       th:value="${app.id}">
+
+                <div class="form-group">
+
+                    <label for="interviewDate">
+                        Interview Date & Time *
+                    </label>
+
+                    <input type="datetime-local"
+                           id="interviewDate"
+                           name="interviewDate"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="interviewMode">
+                        Interview Mode *
+                    </label>
+
+                    <select id="interviewMode"
+                            name="interviewMode"
+                            required>
+
+                        <option value="">Select Interview Mode</option>
+
+                        <option value="ONLINE">ONLINE</option>
+
+                        <option value="OFFLINE">OFFLINE</option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="meetingLink">
+                        Meeting Link <span class="optional">(Optional)</span>
+                    </label>
+
+                    <input type="url"
+                           id="meetingLink"
+                           name="meetingLink"
+                           placeholder="https://meet.google.com/...">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="interviewerName">
+                        Interviewer Name *
+                    </label>
+
+                    <input type="text"
+                           id="interviewerName"
+                           name="interviewerName"
+                           placeholder="Enter interviewer name"
+                           required>
+
+                </div>
+
+                <!-- ACTION BUTTONS -->
+
+                <div class="form-actions">
+
+                    <button type="submit" class="submit-btn">
+                        ✓ Schedule Interview
+                    </button>
+
+                    <a th:href="@{/recruiter/interviews}" class="cancel-btn">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 HireFlow | Connecting Talent with Opportunity
+    </footer>
+
+</body>
+</html>
