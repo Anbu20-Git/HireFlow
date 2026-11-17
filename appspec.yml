@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+
+files:
+  - source: target/hireflow-0.0.1-SNAPSHOT.jar
+    destination: /opt/hireflow
+
+hooks:
+  ApplicationStop:
+    - location: deployment/scripts/stop.sh
+      timeout: 60
+      runas: root
+
+  ApplicationStart:
+    - location: deployment/scripts/start.sh
+      timeout: 120
+      runas: root
